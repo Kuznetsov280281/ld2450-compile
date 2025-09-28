@@ -1,0 +1,26 @@
+captive_portal:
+
+esphome:
+  name: test-esp32
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+api:
+  encryption:
+    key: "qtuv8De3kPIJevVUzc08ch07SqC6DUfIxXGn4hb5uTA="
+
+logger:
+  level: DEBUG
+  baud_rate: 115200
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
