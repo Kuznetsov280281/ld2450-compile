@@ -9,14 +9,23 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       
-    - name: Compile and find firmware
+    - name: Compile with Docker
       run: |
         docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
-        # Копируем все .bin файлы в корень
-        find . -name "*.bin" -exec cp {} . \;
         
-    - name: Upload all bin files
+    - name: Debug - List all files
+      run: |
+        echo "=== Listing all files in build/ ==="
+        find build/ -type f -name "*.bin" 2>/dev/null || echo "No bin files in build/"
+        echo "=== Listing all files recursively ==="
+        find . -name "*.bin" -type f | grep -v ".git" || echo "No bin files found"
+        echo "=== Listing build directory structure ==="
+        ls -la build/ || echo "No build directory"
+        
+    - name: Upload ANY firmware files found
       uses: actions/upload-artifact@v4
       with:
-        name: firmware
-        path: "*.bin"
+        name: firmware-debug
+        path: |
+          build/
+        if-no-files-found: warn
