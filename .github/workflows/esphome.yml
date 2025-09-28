@@ -13,11 +13,13 @@ jobs:
       run: |
         docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
         
-    - name: Upload firmware
+    - name: List generated files
+      run: |
+        echo "=== Checking firmware files ==="
+        find .esphome -name "*.bin" -type f | head -10
+        
+    - name: Upload ALL firmware files
       uses: actions/upload-artifact@v4
       with:
         name: ld2450-firmware
-        path: |
-          .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.bin
-          .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.factory.bin
-          .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.ota.bin
+        path: .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/*.bin
