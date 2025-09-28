@@ -11,19 +11,19 @@ jobs:
       
     - name: Compile with Docker
       run: |
-        docker run --rm -v $(pwd):/config esphome/esphome compile test.yaml
+        docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
         
     - name: Copy firmware to root
       run: |
-        cp .esphome/build/test/.pioenvs/test/firmware.ota.bin test-ota.bin
-        cp .esphome/build/test/.pioenvs/test/firmware.factory.bin test-factory.bin
-        cp .esphome/build/test/.pioenvs/test/firmware.bin test.bin
+        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.ota.bin ld2450-radar-ota.bin
+        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.factory.bin ld2450-radar-factory.bin
+        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.bin ld2450-radar.bin
         
     - name: Upload firmware
       uses: actions/upload-artifact@v4
       with:
-        name: test-firmware
+        name: ld2450-firmware
         path: |
-          test-ota.bin
-          test-factory.bin
-          test-radar.bin
+          ld2450-radar-ota.bin
+          ld2450-radar-factory.bin
+          ld2450-radar.bin
