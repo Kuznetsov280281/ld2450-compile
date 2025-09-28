@@ -1,0 +1,17 @@
+name: ESPHome Compile
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Compile ESPHome
+      uses: esphome/compile-action@v1
+      with:
+        config-file: lidar.yaml
+        platform: esp32
