@@ -28,8 +28,8 @@ wifi:
 
 uart:
   id: uart_bus
-  tx_pin: GPIO17
-  rx_pin: GPIO16
+  tx_pin: TX
+  rx_pin: RX
   baud_rate: 256000
 
 sensor:
