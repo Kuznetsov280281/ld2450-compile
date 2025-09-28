@@ -72,6 +72,8 @@ debug:
   update_interval: 30s
 
 api:
+  encryption:
+    key: "wYW+mT/9xrhAwiqiHsZR7HLvXOSycF/Z0dgYkLUdxCY="
 
 ota:
   - platform: esphome
@@ -562,8 +564,8 @@ binary_sensor:
     device_class: occupancy
 
 i2c:
-  sda: GPIO7
-  scl: GPIO11
+  sda: GPIO21
+  scl: GPIO22
   scan: true
   id: bus_a
 
@@ -862,30 +864,30 @@ sensor:
     unit_of_measurement: 'º'
     icon: mdi:angle-acute
 
-light:
-  - platform: status_led
-    name: sys_status
-    pin: 
-      number: GPIO13
-      ignore_pin_validation_error: true
-    internal: True
-    restore_mode: ALWAYS_OFF
-  - platform: binary
-    name: "Red Info Light"
-    output: board_info_ed
-    entity_category: diagnostic
-    restore_mode: ALWAYS_OFF
+#light:
+#  - platform: status_led
+#    name: sys_status
+#    pin: 
+#      number: GPIO13
+#      ignore_pin_validation_error: true
+#    internal: True
+#    restore_mode: ALWAYS_OFF
+#  - platform: binary
+#    name: "Red Info Light"
+#    output: board_info_ed
+#    entity_category: diagnostic
+#    restore_mode: ALWAYS_OFF
 
 time:
   - platform: sntp
     id: time_now
 
-output:
-  - platform: gpio
-    id: board_info_ed
-    pin: 
-      number: GPIO12
-      ignore_pin_validation_error: true
+#output:
+#  - platform: gpio
+#    id: board_info_ed
+#    pin: 
+#      number: GPIO12
+#      ignore_pin_validation_error: true
 
 switch:
   - platform: factory_reset
@@ -924,12 +926,12 @@ button:
 uart:
   id: uart_bus
   tx_pin: 
-    number: GPIO5
+    number: GPIO1
     mode:
       input: true
       pullup: true
   rx_pin: 
-    number: GPIO4
+    number: GPIO3
     mode:
       input: true
       pullup: true
