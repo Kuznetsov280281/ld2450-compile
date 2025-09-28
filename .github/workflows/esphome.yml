@@ -7,20 +7,16 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       
-    - name: Compile with Docker
+    - name: Compile and find firmware
       run: |
         docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
+        # Копируем все .bin файлы в корень
+        find . -name "*.bin" -exec cp {} . \;
         
-    - name: Find firmware file
-      run: |
-        find . -name "*.bin" -type f | grep -v ".git"
-        echo "## Firmware files found above"
-        
-    - name: Upload firmware
+    - name: Upload all bin files
       uses: actions/upload-artifact@v4
       with:
         name: firmware
-        path: build/**/*.bin
+        path: "*.bin"
