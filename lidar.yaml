@@ -1,0 +1,42 @@
+substitutions:
+  devicename: ld2450-radar
+  friendly_name: LD2450 Radar
+
+esphome:
+  name: ${devicename}
+  friendly_name: ${friendly_name}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+  baud_rate: 115200
+
+api:
+  encryption:
+    key: "wYW+mT/9xrhAwiqiHsZR7HLvXOSycF/Z0dgYkLUdxCY="
+
+ota:
+  - platform: esphome
+    password: "6d2ff09e0caa972526b4446d82043c04"
+
+wifi:
+  ssid: "wi-fi_home_tech"
+  password: "13579kuzn"
+
+uart:
+  id: uart_bus
+  tx_pin: GPIO17
+  rx_pin: GPIO16
+  baud_rate: 256000
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+
+binary_sensor:
+  - platform: status
+    name: "Status"
