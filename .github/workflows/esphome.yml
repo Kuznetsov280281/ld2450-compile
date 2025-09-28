@@ -9,17 +9,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       
-    - name: Compile with Docker
+    - name: Compile and prepare firmware
       run: |
         docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
+        # Копируем все bin файлы в корень для простоты
+        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/*.bin . || echo "Copy failed but continuing"
         
-    - name: List generated files
-      run: |
-        echo "=== Checking firmware files ==="
-        find .esphome -name "*.bin" -type f | head -10
-        
-    - name: Upload ALL firmware files
+    - name: Upload firmware from root
       uses: actions/upload-artifact@v4
       with:
         name: ld2450-firmware
-        path: .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/*.bin
+        path: "*.bin"
