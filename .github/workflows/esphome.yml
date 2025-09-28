@@ -8,9 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - run: docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
-    - run: find . -name "*.bin" -exec cp {} . \;
-    - uses: actions/upload-artifact@v4
+      
+    - name: Compile with Docker
+      run: |
+        docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
+        
+    - name: Copy firmware to root
+      run: |
+        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.ota.bin ld2450-radar-ota.bin
+        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.factory.bin ld2450-radar-factory.bin
+        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.bin ld2450-radar.bin
+        
+    - name: Upload firmware
+      uses: actions/upload-artifact@v4
       with:
-        name: firmware
-        path: "*.bin"
+        name: ld2450-firmware
+        path: |
+          ld2450-radar-ota.bin
+          ld2450-radar-factory.bin
+          ld2450-radar.bin
