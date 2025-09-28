@@ -14,8 +14,13 @@ jobs:
       run: |
         docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
         
+    - name: Find firmware file
+      run: |
+        find . -name "*.bin" -type f | grep -v ".git"
+        echo "## Firmware files found above"
+        
     - name: Upload firmware
       uses: actions/upload-artifact@v4
       with:
         name: firmware
-        path: build/
+        path: build/**/*.bin
