@@ -1,0 +1,21 @@
+name: ESPHome Compile
+
+on:
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Compile with Docker
+      run: |
+        docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
+        
+    - name: Upload firmware
+      uses: actions/upload-artifact@v4
+      with:
+        name: firmware
+        path: build/
