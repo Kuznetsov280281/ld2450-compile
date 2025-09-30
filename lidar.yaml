@@ -10,8 +10,8 @@ esp32:
     type: arduino
 
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  ssid: "wi-fi_home_tech"
+  password: "13579kuzn"
 
 api:
   encryption:
