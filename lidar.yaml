@@ -1,8 +1,6 @@
-substitutions:
-  devicename: ld2450-test
-
 esphome:
-  name: ${devicename}
+  name: ld2450-radar
+  friendly_name: LD2450 Radar
 
 esp32:
   board: esp32dev
@@ -18,9 +16,8 @@ api:
     key: "wYW+mT/9xrhAwiqiHsZR7HLvXOSycF/Z0dgYkLUdxCY="
 
 logger:
-  level: DEBUG
   baud_rate: 115200
 
-sensor:
-  - platform: wifi_signal
-    name: "WiFi Signal"
+ota:
+  - platform: esphome
+    password: "6d2ff09e0caa972526b4446d82043c04"
