@@ -9,13 +9,25 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       
-    - name: Compile and prepare
+    - name: Compile with Docker
       run: |
         docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
         
-    - name: Upload build folder
+    - name: Find and copy firmware safely
+      run: |
+        echo "=== Looking for firmware files ==="
+        find . -name "firmware.factory.bin" 2>/dev/null | head -1
+        find . -name "firmware.ota.bin" 2>/dev/null | head -1
+        
+        # Копируем безопасно
+        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.factory.bin . 2>/dev/null || echo "Factory not found"
+        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.ota.bin . 2>/dev/null || echo "OTA not found"
+        
+        ls -la *.bin 2>/dev/null || echo "No bin files copied"
+        
+    - name: Upload firmware
       uses: actions/upload-artifact@v4
       with:
-        name: build-files
-        path: .esphome/build/
-        retention-days: 1
+        name: firmware
+        path: "*.bin"
+        if-no-files-found: warn
