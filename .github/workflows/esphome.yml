@@ -13,19 +13,13 @@ jobs:
       run: |
         docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
         
-    - name: Find and copy firmware files
+    - name: Find and upload firmware
       run: |
-        echo "=== Searching for firmware files ==="
-        find . -name "*.bin" -type f | grep -v ".git" | head -10
-        echo "=== Copying files from correct path ==="
-        cp .esphome/build/ld2450/.pioenvs/ld2450/firmware.ota.bin ld2450-ota.bin 2>/dev/null || echo "OTA file not found"
-        cp .esphome/build/ld2450/.pioenvs/ld2450/firmware.factory.bin ld2450-factory.bin 2>/dev/null || echo "Factory file not found"
-        cp .esphome/build/ld2450/.pioenvs/ld2450/firmware.bin ld2450.bin 2>/dev/null || echo "Firmware file not found"
-        ls -la *.bin 2>/dev/null || echo "No bin files in root"
+        find . -name "firmware.factory.bin" -exec cp {} . \;
+        find . -name "firmware.ota.bin" -exec cp {} . \;
         
-    - name: Upload any found firmware
+    - name: Upload firmware
       uses: actions/upload-artifact@v4
       with:
-        name: ld2450-firmware
-        path: "*.bin"
-        if-no-files-found: warn
+        name: firmware
+        path: "firmware*.bin"
