@@ -5,7 +5,7 @@ esphome:
 esp32:
   board: esp32dev
   framework:
-    type: arduino
+    type: esp-idf
 
 wifi:
   ssid: "wi-fi_home_tech"
@@ -21,3 +21,22 @@ logger:
 ota:
   - platform: esphome
     password: "6d2ff09e0caa972526b4446d82043c04"
+
+uart:
+  id: uart_bus
+  tx_pin: GPIO17
+  rx_pin: GPIO16
+  baud_rate: 256000
+
+sensor:
+  - platform: ld2450
+    mac_address:
+      name: "LD2450 MAC"
+    
+    target_1:
+      x:
+        name: "Target 1 X"
+        id: target1_x
+      y:
+        name: "Target 1 Y" 
+        id: target1_y
