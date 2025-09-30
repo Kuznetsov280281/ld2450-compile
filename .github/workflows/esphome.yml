@@ -9,17 +9,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       
-    - name: Compile with Docker
+    - name: Compile and prepare
       run: |
         docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
         
-    - name: Find and upload firmware
-      run: |
-        find . -name "firmware.factory.bin" -exec cp {} . \;
-        find . -name "firmware.ota.bin" -exec cp {} . \;
-        
-    - name: Upload firmware
+    - name: Upload build folder
       uses: actions/upload-artifact@v4
       with:
-        name: firmware
-        path: "firmware*.bin"
+        name: build-files
+        path: .esphome/build/
+        retention-days: 1
