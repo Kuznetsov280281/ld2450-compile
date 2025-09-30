@@ -1,11 +1,8 @@
 esphome:
   name: ld2450-radar
-  friendly_name: LD2450 Radar
 
 esp32:
   board: esp32dev
-  framework:
-    type: arduino
 
 wifi:
   ssid: "wi-fi_home_tech"
@@ -16,7 +13,11 @@ api:
     key: "wYW+mT/9xrhAwiqiHsZR7HLvXOSycF/Z0dgYkLUdxCY="
 
 logger:
+  level: DEBUG
   baud_rate: 115200
+
+web_server:
+  port: 80
 
 ota:
   - platform: esphome
