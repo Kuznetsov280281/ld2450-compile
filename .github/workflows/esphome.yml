@@ -9,20 +9,23 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       
-    - name: Compile and show full output
+    - name: Compile with Docker
       run: |
-        # Запускаем компиляцию и сохраняем полный вывод
-        docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml 2>&1 | tee compile.log
+        docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
         
-    - name: Check if build directory exists
+    - name: Copy firmware files
       run: |
-        echo "=== Checking build directory ==="
-        ls -la .esphome/ 2>/dev/null || echo "No .esphome directory"
-        find . -name "*.bin" -type f 2>/dev/null | head -10 || echo "No bin files found"
+        # Копируем файлы прошивки в корень
+        cp /config/.esphome/build/ld2450/.pioenvs/ld2450/firmware.ota.bin ld2450-ota.bin
+        cp /config/.esphome/build/ld2450/.pioenvs/ld2450/firmware.factory.bin ld2450-factory.bin
+        cp /config/.esphome/build/ld2450/.pioenvs/ld2450/firmware.bin ld2450.bin
+        ls -la *.bin
         
-    - name: Upload compilation log
+    - name: Upload firmware
       uses: actions/upload-artifact@v4
       with:
-        name: compilation-log
-        path: compile.log
-        retention-days: 1
+        name: ld2450-firmware
+        path: |
+          ld2450-ota.bin
+          ld2450-factory.bin
+          ld2450.bin
