@@ -9,21 +9,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       
-    - name: Compile with Docker
+    - name: Compile and show full output
       run: |
-        docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
+        # Запускаем компиляцию и сохраняем полный вывод
+        docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml 2>&1 | tee compile.log
         
-    - name: Find and list all firmware files
+    - name: Check if build directory exists
       run: |
-        echo "=== Searching for firmware files ==="
-        find . -name "*.bin" -type f | grep -v ".git" | head -20 || echo "No bin files found"
-        echo "=== Build directory structure ==="
-        find .esphome -type f -name "*.bin" 2>/dev/null | head -10 || echo "No files in .esphome"
+        echo "=== Checking build directory ==="
+        ls -la .esphome/ 2>/dev/null || echo "No .esphome directory"
+        find . -name "*.bin" -type f 2>/dev/null | head -10 || echo "No bin files found"
         
-    - name: Upload ANY found firmware
+    - name: Upload compilation log
       uses: actions/upload-artifact@v4
       with:
-        name: firmware-files
-        path: |
-          .esphome/build/**/*.bin
-        if-no-files-found: warn
+        name: compilation-log
+        path: compile.log
+        retention-days: 1
