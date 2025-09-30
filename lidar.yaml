@@ -11,6 +11,8 @@ wifi:
   password: "13579kuzn"
 
 api:
+  encryption:
+    key: "wYW+mT/9xrhAwiqiHsZR7HLvXOSycF/Z0dgYkLUdxCY="
 
 logger:
   baud_rate: 115200
