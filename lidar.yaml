@@ -1,5 +1,5 @@
 substitutions:
-  devicename: ld2450
+  devicename: ld2450-test
 
 esphome:
   name: ${devicename}
@@ -18,14 +18,9 @@ api:
     key: "wYW+mT/9xrhAwiqiHsZR7HLvXOSycF/Z0dgYkLUdxCY="
 
 logger:
+  level: DEBUG
   baud_rate: 115200
 
-ota:
-  - platform: esphome
-    password: "6d2ff09e0caa972526b4446d82043c04"
-
-uart:
-  id: uart_ld2450
-  tx_pin: GPIO17
-  rx_pin: GPIO16
-  baud_rate: 256000
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal"
