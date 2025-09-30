@@ -5,7 +5,7 @@ esphome:
 esp32:
   board: esp32dev
   framework:
-    type: esp-idf
+    type: arduino
 
 wifi:
   ssid: "wi-fi_home_tech"
@@ -28,15 +28,76 @@ uart:
   rx_pin: GPIO16
   baud_rate: 256000
 
+# Сенсоры для данных LD2450
 sensor:
-  - platform: ld2450
-    mac_address:
-      name: "LD2450 MAC"
+  - platform: template
+    name: "Target 1 X"
+    id: target1_x
+    unit_of_measurement: "mm"
+    accuracy_decimals: 0
     
-    target_1:
-      x:
-        name: "Target 1 X"
-        id: target1_x
-      y:
-        name: "Target 1 Y" 
-        id: target1_y
+  - platform: template
+    name: "Target 1 Y"
+    id: target1_y
+    unit_of_measurement: "mm"
+    accuracy_decimals: 0
+    
+  - platform: template
+    name: "Target 2 X"
+    id: target2_x
+    unit_of_measurement: "mm"
+    accuracy_decimals: 0
+    
+  - platform: template
+    name: "Target 2 Y"
+    id: target2_y
+    unit_of_measurement: "mm"
+    accuracy_decimals: 0
+
+  - platform: template
+    name: "Presence Count"
+    id: presence_count
+    unit_of_measurement: "targets"
+    accuracy_decimals: 0
+
+binary_sensor:
+  - platform: template
+    name: "Presence Detected"
+    device_class: occupancy
+    lambda: |-
+      return id(presence_count).state > 0;
+
+# Парсинг данных LD2450
+uart:
+  id: uart_bus
+  tx_pin: GPIO17
+  rx_pin: GPIO16
+  baud_rate: 256000
+  debug:
+    direction: BOTH
+    after:
+      bytes: 24  # Размер пакета данных LD2450
+    sequence:
+      - lambda: |-
+          // Парсинг данных LD2450
+          if (x.size() == 24) {
+            // Target 1
+            int16_t t1_x = (x[4] << 8) | x[3];
+            int16_t t1_y = (x[6] << 8) | x[5];
+            
+            // Target 2  
+            int16_t t2_x = (x[12] << 8) | x[11];
+            int16_t t2_y = (x[14] << 8) | x[13];
+            
+            // Публикация данных
+            id(target1_x).publish_state(t1_x);
+            id(target1_y).publish_state(t1_y);
+            id(target2_x).publish_state(t2_x);
+            id(target2_y).publish_state(t2_y);
+            
+            // Подсчет целей
+            int count = 0;
+            if (t1_x != 0 || t1_y != 0) count++;
+            if (t2_x != 0 || t2_y != 0) count++;
+            id(presence_count).publish_state(count);
+          }
