@@ -3,8 +3,6 @@ name: ESPHome Build
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -12,25 +10,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Build ESPHome firmware
-      uses: esphome/compile-skill@v2
-      with:
-        yaml_file: lidar.yaml  # ваш yaml файл
-        esphome_version: "2025.9.3"
-        
-    - name: List build files
+    - name: Build with ESPHome
       run: |
-        echo "=== Listing build directory ==="
-        find . -name "*.bin" -type f | head -20
-        echo "=== ESPHome build structure ==="
-        find .esphome -type f -name "*.bin" 2>/dev/null || echo "No bin files found in .esphome"
+        pip install esphome
+        esphome compile lidar.yaml
         
-    - name: Upload firmware artifacts
+    - name: Upload firmware
       uses: actions/upload-artifact@v4
       with:
-        name: lidar-firmware
+        name: firmware
         path: |
-          .esphome/build/lidar/.pioenvs/lidar/firmware.bin
-          .esphome/build/lidar/.pioenvs/lidar/firmware.factory.bin
-          .esphome/build/lidar/.pioenvs/lidar/firmware.ota.bin
-        if-no-files-found: error
+          build/lidar/.pioenvs/lidar/firmware.bin
+          build/lidar/.pioenvs/lidar/firmware.factory.bin
+          build/lidar/.pioenvs/lidar/firmware.ota.bin
