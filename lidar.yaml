@@ -62,21 +62,21 @@ api:
   encryption:
     # use your own encryption key plz.
     # https://esphome.io/components/api.html?#configuration-variables
-    key: "dIKqlH62eMjsnhGf9sOqJnwy03aQmRHo9tQyWpV6EXA="
+    key: "wYW+mT/9xrhAwiqiHsZR7HLvXOSycF/Z0dgYkLUdxCY="
     
 ota:
   platform: esphome
   # use your own ota password plz.
-  password: !secret ota_password
+  password: "13579kuzn"
 
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  ssid: "wi-fi_home_tech"
+  password: "13579kuzn"
   power_save_mode: LIGHT
   reboot_timeout: 10min
   ap:
     ssid: "${devicename} Hotspot"
-    password: !secret hotspot_password
+    password: "13579kuzn"
 
 captive_portal:
 
