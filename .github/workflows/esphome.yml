@@ -1,33 +1,36 @@
-name: ESPHome Compile
+name: ESPHome Build
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  compile:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-      
-    - name: Compile with Docker
+    
+    - name: Build ESPHome firmware
+      uses: esphome/compile-skill@v2
+      with:
+        yaml_file: lidar.yaml  # ваш yaml файл
+        esphome_version: "2025.9.3"
+        
+    - name: List build files
       run: |
-        docker run --rm -v $(pwd):/config esphome/esphome compile lidar.yaml
+        echo "=== Listing build directory ==="
+        find . -name "*.bin" -type f | head -20
+        echo "=== ESPHome build structure ==="
+        find .esphome -type f -name "*.bin" 2>/dev/null || echo "No bin files found in .esphome"
         
-    - name: Find and copy firmware safely
-      run: |
-        echo "=== Looking for firmware files ==="
-        find . -name "firmware.factory.bin" 2>/dev/null | head -1
-        find . -name "firmware.ota.bin" 2>/dev/null | head -1
-        
-        # Копируем безопасно
-        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.factory.bin . 2>/dev/null || echo "Factory not found"
-        cp .esphome/build/ld2450-radar/.pioenvs/ld2450-radar/firmware.ota.bin . 2>/dev/null || echo "OTA not found"
-        
-        ls -la *.bin 2>/dev/null || echo "No bin files copied"
-        
-    - name: Upload firmware
+    - name: Upload firmware artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: firmware
-        path: "*.bin"
-        if-no-files-found: warn
+        name: lidar-firmware
+        path: |
+          .esphome/build/lidar/.pioenvs/lidar/firmware.bin
+          .esphome/build/lidar/.pioenvs/lidar/firmware.factory.bin
+          .esphome/build/lidar/.pioenvs/lidar/firmware.ota.bin
+        if-no-files-found: error
