@@ -3,6 +3,7 @@ name: ESPHome Build
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:    # Для ручного запуска
 
 jobs:
   build:
@@ -10,16 +11,34 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Build with ESPHome
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install ESPHome
       run: |
         pip install esphome
+        
+    - name: Compile firmware
+      run: |
         esphome compile lidar.yaml
         
-    - name: Upload firmware
+    - name: Find and list all firmware files
+      run: |
+        echo "=== Searching for all firmware files ==="
+        find . -name "*.bin" -type f | while read file; do
+          echo "Found: $file"
+          cp "$file" ./
+        done
+        ls -la *.bin || echo "No bin files copied"
+        
+    - name: Upload firmware artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: firmware
+        name: lidar-firmware
         path: |
-          build/lidar/.pioenvs/lidar/firmware.bin
-          build/lidar/.pioenvs/lidar/firmware.factory.bin
-          build/lidar/.pioenvs/lidar/firmware.ota.bin
+          firmware.bin
+          firmware.factory.bin
+          firmware.ota.bin
+        if-no-files-found: warn
