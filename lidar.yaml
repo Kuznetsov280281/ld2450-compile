@@ -4,7 +4,7 @@
 substitutions:
   devicename: lidar
   friendly_name: lidar
-  entity_name: "" # Leave empty if you want entities named "Target..." otherwise put "Room" to have an entity named "Room Target..."
+  entity_name: "" # Leave empty if you want entities named "Target..." otherwise put "Room" to have an entity named "Room Target.."
   # specify below pin numbers of your LD2450
   tx_pin_ld2450: GPIO17
   rx_pin_ld2450: GPIO16
